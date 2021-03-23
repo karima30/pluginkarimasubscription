@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+
+
+<serializer xmlns="http://symfony.com/schema/dic/serializer-mapping"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://symfony.com/schema/dic/serializer-mapping https://symfony.com/schema/dic/serializer-mapping/serializer-mapping-1.0.xsd"
+>
+    <class name="Sylius\Component\Core\Model\Product">
+        <attribute name="code">
+            <group>product:read</group>
+            <group>product:create</group>
+            <group>program</group>
+        </attribute>
+        <attribute name="name">
+            <group>order:read</group>
+            <group>subscription_order</group>
+        </attribute>
+        <attribute name="variants">
+            <group>product:read</group>
+            <group>program</group>
+        </attribute>
+        <attribute name="productTaxons">
+            <group>product:read</group>
+            <group>product:update</group>
+            <group>product:create</group>
+            <group>program</group>
+        </attribute>
+        <attribute name="images">
+            <group>product:read</group>
+            <group>product:create</group>
+            <group>product:update</group>
+            <group>program</group>
+            <group>order:read</group>
+            <group>subscription_order</group>
+        </attribute>
+        <attribute name="translations">
+            <group>product:read</group>
+            <group>product:create</group>
+            <group>product:update</group>
+            <group>program</group>
+        </attribute>
+        <attribute name="nutritionIndex">
+            <group>program</group>
+        </attribute>
+        <attribute name="attributes">
+            <group>program</group>
+        </attribute>
+        <attribute name="program">
+            <group>order:read</group>
+            <group>subscription_order</group>
+        </attribute>
+    </class>
+</serializer>

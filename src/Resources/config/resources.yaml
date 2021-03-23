@@ -1,0 +1,117 @@
+sylius_resource:
+  resources:
+    ksante_subscription.program_details:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\ProgramDetails
+        interface: Ksante\SubscriptionPlugin\Entity\ProgramDetailsInterface
+        form: Ksante\SubscriptionPlugin\Form\Type\ProgramDetailsType
+        factory: Sylius\Component\Resource\Factory\Factory
+        repository: Ksante\SubscriptionPlugin\Repository\ProgramDetailsRepository
+
+    ksante_subscription_plugin.program:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\Program
+        interface: Ksante\SubscriptionPlugin\Entity\ProgramInterface
+        form: Ksante\SubscriptionPlugin\Form\Type\ProgramType
+        factory: Sylius\Component\Resource\Factory\Factory
+
+    ksante_subscription.product:
+      classes:
+        model: "%sylius.model.product.class%"
+        form: Sylius\Bundle\ProductBundle\Form\Type\ProductType
+
+    ksante_subscription.nutritional_information_image:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\NutritionalInformationImage
+        form: Ksante\SubscriptionPlugin\Form\Type\NutritionalInformationImageType
+
+    ksante_subscription.subscription:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\Subscription
+        repository: Ksante\SubscriptionPlugin\Repository\SubscriptionRepository
+
+    ksante_subscription.order_item_details:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\OrderItemDetails
+        repository: Ksante\SubscriptionPlugin\Repository\OrderItemDetailsRepository
+
+    ksante_subscription.subscription_order:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\SubscriptionOrder
+        repository: Ksante\SubscriptionPlugin\Repository\SubscriptionOrderRepository
+
+    ksante_subscription.subscription_order_item:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\SubscriptionOrderItem
+        repository: Ksante\SubscriptionPlugin\Repository\SubscriptionOrderItemRepository
+        form: Ksante\SubscriptionPlugin\Form\Type\SubscriptionOrderProductsType
+
+    ksante_subscription.subscription_order_item_details:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\SubscriptionOrderItemDetails
+        repository: Ksante\SubscriptionPlugin\Repository\SubscriptionOrderItemDetailsRepository
+
+    ksante_subscription_plugin.product_selected_programs:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\ProductSelectedPrograms
+        form: Ksante\SubscriptionPlugin\Form\Type\ProductSelectedProgramsType
+
+    ksante_subscription.subscription_logs:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\SubscriptionLog
+        repository: Ksante\SubscriptionPlugin\Repository\SubscriptionLogRepository
+
+    ksante_subscription.stabilization_number_of_days_per_week:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\StabilizationNumberOfDaysPerWeek
+
+    ksante_subscription.stabilization_number_of_weeks_interval:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\StabilizationNumberOfWeeksInterval
+
+    ksante_subscription.stabilization_category:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\StabilizationCategory
+        form: Ksante\SubscriptionPlugin\Form\Type\StabilizationCategoryType
+
+    ksante_subscription.stabilization_options:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\StabilizationOptions
+        repository: Ksante\SubscriptionPlugin\Repository\StabilizationOptionsRepository
+
+    ksante_subscription.program_categories_detail:
+      driver: doctrine/orm
+      classes:
+        model: Ksante\SubscriptionPlugin\Entity\ProgramCategoriesDetail
+        form: Ksante\SubscriptionPlugin\Form\Type\ProgramCategoriesType
+
+winzou_state_machine:
+  sylius_shipment:
+    callbacks:
+      after:
+        ksante_subscription_plugin_generate_new_subscription_order:
+          on: ["ship"]
+          do: ["@ksante_subscription_plugin.service.order_service", "generateNewSubscriptionOrder"]
+          args: ["object"]
+
+  sylius_payment:
+    callbacks:
+      after:
+        sylius_update_subscription_status:
+          on: [ "complete" ]
+          do: [ "@ksante_subscription_plugin.service.subscription_service", "updateSubscriptionState" ]
+          args: [ "object" ]

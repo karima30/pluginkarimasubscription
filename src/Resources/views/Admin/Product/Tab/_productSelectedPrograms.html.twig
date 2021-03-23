@@ -1,0 +1,15 @@
+<div class="ui tab productSelectedPrograms" data-tab="productSelectedPrograms">
+    <h3 class="ui top attached header">{{ 'ksante_subscription.ui.product_selected_products'|trans }}</h3>
+
+    <div class="ui attached segment">
+        {{ form_errors(form) }}
+        <div class="ui one column stackable grid">
+            <div class="column">
+                <div class="ui segment">
+                        {{ form_row(form.productSelectedPrograms) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

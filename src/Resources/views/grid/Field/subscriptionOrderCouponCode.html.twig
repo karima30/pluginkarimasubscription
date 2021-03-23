@@ -1,0 +1,15 @@
+<div style="width: 100%; text-align: center;">
+    {% if data.isValidated == false or data.isValidated is empty %}
+    <div class="ui input position" style="">
+        <form action="/admin/updateSubscriptionOrderCouponCode" method="post">
+            <div style="width: 100%; display: flex;">
+                <input type='text' value="{{ data.couponCode }}" name="couponCode" class="sylius-product-variant-position" style="text-align: center; width: 120px; margin-right: 5px;" />
+                <input type='hidden' value="{{ data.id }}" name="id" />
+                <button type="submit" class="ui labeled icon teal button"><i class="update icon"></i> <a style="color: white; margin-left: -16px">{{ 'sylius.ui.save'|trans }}</a></button>
+            </div>
+        </form>
+    </div>
+    {% else %}
+        {{ data.couponCode }}
+    {% endif %}
+</div>

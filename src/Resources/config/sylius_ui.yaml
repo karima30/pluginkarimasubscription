@@ -1,0 +1,7 @@
+sylius_ui:
+  events:
+    sylius.shop.product.show.content:
+      blocks:
+        list:
+          template: '@KsanteSubscriptionPlugin/list.html.twig'
+          priority: 1000

@@ -1,0 +1,15 @@
+ksante_subscription:
+  flashes:
+    updatedSubscriptionStatus: Subscription status updated
+    subscriptionDoesNotExist: The subscription id does not exist
+    updatedNextOrderDate: The next order date was updated successfully
+    errorEmailing: An error has occurred in the email sending
+    unfulfilledProgramCategories: You havent' selected all the program's obligatory categories
+    invalidSelectedCategory: The provided category does not exist or its not associated to the program
+    invalidProductQuantity: The chosen products quantity is invalid to the category
+    emptySubscriptionsList: The subscriptions list is empty
+    unselectedStabilizationCategory: The chosen stabilization category was not selected
+    unselectedCategoryInStabilizationOptions: The selected category does not belong to the chosen stabilization options
+    notEnoughParametersToUpdateSubscriptionOrderCouponCode: You haven't provided enough parameters to update the coupon code
+    subscriptionOrderDoesNotExist: The provided subscription order does not exist
+    promotionCouponDoesNotExist: The provided coupon code does not exist

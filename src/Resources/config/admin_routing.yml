@@ -1,0 +1,536 @@
+ksante_subscription.program:
+  resource: |
+    alias: ksante_subscription.product
+    section: admin
+    path: programs
+    templates: SyliusAdminBundle:Crud
+    grid: ksante_subscription_admin_program
+    redirect: index
+    vars:
+        all:
+            header: ksante_subscription.ui.programs
+            subheader: ksante_subscription.ui.manage_program
+            templates:
+                form: '@SyliusAdmin/Product/_form.html.twig'
+                breadcrumb: '@KsanteSubscriptionPlugin/Admin/Program/Program/Edit/_breadcrumb.html.twig'
+  type: sylius.resource
+
+ksante_subscription_admin_product.create_simple:
+  path: /programs/new/simple
+  methods: [GET, POST]
+  defaults:
+    _controller: sylius.controller.product:createAction
+    _redirect: index
+    _sylius:
+      section: admin
+      permission: true
+      factory:
+        method: createWithVariant
+      template: SyliusAdminBundle:Crud:create.html.twig
+      redirect: ksante_subscription_admin_product_index
+      vars:
+        subheader: ksante_subscription.ui.manage_program
+        templates:
+          form: '@SyliusAdmin/Product/_form.html.twig'
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Program/Program/Edit/_breadcrumb.html.twig'
+        route:
+          name: ksante_subscription_admin_product.create_simple
+
+ksante_subscription_duplicate_program:
+  path: /duplicateProgram/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\ProgramController::duplicateProgram
+    _sylius:
+      section: admin
+
+ksante_subscription.subscription:
+  resource: |
+    alias: ksante_subscription.subscription
+    section: admin
+    path: subscriptions
+    templates: SyliusAdminBundle:Crud
+    #templates: "@SyliusAdmin\\Crud"
+    #only: ['index']
+    grid: ksante_subscription_admin_subscription
+    redirect: index
+    vars:
+        all:
+            header: ksante_subscription.ui.subscriptions
+            subheader: ksante_subscription.ui.manage_subscriptions
+  type: sylius.resource
+
+ksante_subscription_subscription_show_orders:
+  path: /subscriptions/{subscriptionID}/orders
+  methods: [GET]
+  defaults:
+    _controller: sylius.controller.order:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_admin_order_by_subscription
+      vars:
+        route:
+          parameters:
+            $subscriptionID: $subscriptionID
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Subscription/Order/Index/_breadcrumb.html.twig'
+        subheader: sylius.ui.process_your_orders
+
+ksante_subscription_pause_subscription:
+  path: /pauseSubscription/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::pauseSubscription
+    _sylius:
+
+ksante_subscription_auto_pause_subscription:
+  path: /autoPauseSubscription/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::autoPauseSubscription
+    _sylius:
+
+ksante_subscription_unsubscribe:
+  path: /unsubscribe/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::unsubscribe
+    _sylius:
+
+ksante_subscription_resend_payment_email:
+  path: /resendPaymentEmail/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::resendPaymentEmail
+    _sylius:
+
+ksante_subscription_access_paybox_page:
+  path: /accessPayboxPage/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::accessPayboxPage
+    _sylius:
+
+ksante_subscription_resume_subscription:
+  path: /resumeSubscription/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::resumeSubscription
+    _sylius:
+
+ksante_subscription.order_item_details:
+  resource: |
+    alias: ksante_subscription.order_item_details
+    section: admin
+    path: order_item_details
+    templates: SyliusAdminBundle:Crud
+    grid: ksante_subscription_admin_ordet_item_details
+    redirect: index
+  type: sylius.resource
+
+ksante_subscription.order_items:
+  resource: |
+    alias: ksante_subscription.order_item_details
+    section: admin
+    path: order_items
+    templates: SyliusAdminBundle:Crud
+    grid: ksante_subscription_admin_order_item_details
+    redirect: index
+  type: sylius.resource
+
+
+ksante_subscription_subscription_show_order_items_details:
+  path: /subscriptions/{orderID}/order_items_details
+  methods: [GET]
+  defaults:
+    _controller: sylius.controller.order_item:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_admin_order_item_details
+      vars:
+        route:
+          parameters:
+            $orderID: $orderID
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Subscription/OrderItem/Index/_breadcrumb.html.twig'
+        header: ksante_subscription.ui.selected_products
+
+ksante_subscription_subscription_show_order_items_options:
+  path: /subscriptions/{orderID}/order_item_options
+  methods: [GET]
+  defaults:
+    _controller: sylius.controller.order_item:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_admin_order_item_options
+      vars:
+        route:
+          parameters:
+            $orderID: $orderID
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Subscription/OrderItem/Index/_breadcrumb.html.twig'
+        header: ksante_subscription.ui.selected_options
+
+ksante_subscription_generate_new_order_from_subscription_order:
+  path: /generateOrderFromSubscriptionOrder/{subscriptionID}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\OrderController::generateOrderFromSubscriptionOrder
+    _sylius:
+
+ksante_subscription_customer_show_subscriptions:
+  path: /customer/{customerID}/subscriptions
+  methods: [GET]
+  defaults:
+    _controller: sylius.controller.order:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_admin_subscription_by_customer
+      vars:
+        route:
+          parameters:
+            $customerID: $customerID
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Customer/Subscription/Index/_breadcrumb.html.twig'
+        header: ksante_subscription.ui.subscription_orders
+
+ksante_subscription_subscription_order_show_subscription_orders:
+  path: /subscriptions/{subscriptionID}/subscription_orders
+  methods: [GET]
+  defaults:
+    _controller: sylius.controller.order:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_admin_subscription_order_by_subscription
+      vars:
+        route:
+          parameters:
+            $subscriptionID: $subscriptionID
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Subscription/SubscriptionOrder/Index/_breadcrumb.html.twig'
+        header: ksante_subscription.ui.subscription_orders
+
+ksante_subscription_subscription_show_subscription_order_items_details:
+  path: /subscriptions/{orderID}/subscription_order_items_details
+  methods: [GET]
+  defaults:
+    _controller: ksante_subscription.controller.subscription_order_item_details:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_admin_subscription_order_item_details
+      vars:
+        route:
+          parameters:
+            $orderID: $orderID
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Subscription/SubscriptionOrderItem/Index/_breadcrumb.html.twig'
+        header: ksante_subscription.ui.selected_products
+
+ksante_subscription_subscription_show_subscription_order_options:
+  path: /subscriptions/{orderID}/subscription_order_options
+  methods: [GET]
+  defaults:
+    _controller: ksante_subscription.controller.subscription_order_item:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_admin_subscription_order_options
+      vars:
+        route:
+          parameters:
+            $orderID: $orderID
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Subscription/SubscriptionOrderItem/Index/_breadcrumb.html.twig'
+        header: ksante_subscription.ui.selected_options
+
+ksante_subscription_subscription_show_states_logs_by_subscription:
+  path: /subscriptions/{subscriptionID}/logs
+  methods: [GET]
+  defaults:
+    _controller: ksante_subscription.controller.subscription_logs:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_admin_subscription_log_by_subscription
+      vars:
+        route:
+          parameters:
+            $subscriptionID: $subscriptionID
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Subscription/SubscriptionLog/Index/_breadcrumb.html.twig'
+
+ksante_subscription.subscription_order_states_log:
+  resource: |
+    alias: ksante_subscription.subscription_logs
+    section: admin
+    path: subscription_log
+    templates: "@SyliusAdmin\\Crud"
+    only: ['index']
+    grid: ksante_subscription_admin_subscription_log
+    vars:
+        all:
+            header: ksante_subscription.ui.subscription_logs
+  type: sylius.resource
+
+ksante_subscription.stabilization_number_of_days_per_week:
+  resource: |
+    alias: ksante_subscription.stabilization_number_of_days_per_week
+    section: admin
+    path: stabilization_number_of_days_per_week
+    templates: SyliusAdminBundle:Crud
+    grid: ksante_subscription_stabilization_number_of_days_per_week
+    redirect: index
+    vars:
+        all:
+            header: ksante_subscription.ui.stabilization_number_of_days_per_week
+            templates:
+              breadcrumb: '@KsanteSubscriptionPlugin/Admin/Stabilization/StabilizationNumberOfDaysPerWeek/_breadcrumb.html.twig'
+  type: sylius.resource
+
+ksante_subscription.stabilization_number_of_weeks_interval:
+  resource: |
+    alias: ksante_subscription.stabilization_number_of_weeks_interval
+    section: admin
+    path: stabilization_number_of_weeks_interval
+    templates: SyliusAdminBundle:Crud
+    grid: ksante_subscription_stabilization_number_of_weeks_interval
+    redirect: index
+    vars:
+        all:
+            header: ksante_subscription.ui.manage_stabilization_number_of_weeks_interval
+            templates:
+              breadcrumb: '@KsanteSubscriptionPlugin/Admin/Stabilization/StabilizationStabilizationNumberOfWeeksInterval/_breadcrumb.html.twig'
+  type: sylius.resource
+
+ksante_subscription.stabilization_category:
+  resource: |
+    alias: ksante_subscription.stabilization_category
+    section: admin
+    path: stabilization_category
+    templates: SyliusAdminBundle:Crud
+    grid: ksante_subscription_stabilization_category
+    redirect: index
+    vars:
+        all:
+            header: ksante_subscription.ui.stabilization_category
+            templates:
+              breadcrumb: '@KsanteSubscriptionPlugin/Admin/Stabilization/StabilizationCategory/_breadcrumb.html.twig'
+  type: sylius.resource
+
+ksante_subscription.stabilization_options:
+  resource: |
+    alias: ksante_subscription.stabilization_options
+    section: admin
+    path: stabilization_options
+    templates: SyliusAdminBundle:Crud
+    grid: ksante_subscription_stabilization_options
+    vars:
+        all:
+            header: ksante_subscription.ui.stabilization_options
+  type: sylius.resource
+
+ksante_subscription_stabilization_options_price_update:
+  path: /updateStabilizationOptionPrice
+  methods: [POST]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\StabilizationOptionsController::updateStabilizationOptionPrice
+    _format: json
+    _sylius:
+      permission: true
+
+ksante_subscription_stabilization_options_generate:
+  path: /generateStabilizationOptions
+  methods: [GET]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\StabilizationOptionsController::generateStabilizationOptions
+    _format: json
+    _sylius:
+      permission: true
+
+ksante_subscription_show_stabilization_options_by_subscription:
+  path: /subscriptions/{subscriptionID}/stabilization_options
+  methods: [GET]
+  defaults:
+    _controller: ksante_subscription.controller.stabilization_options:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_show_stabilization_options_by_subscription
+      vars:
+        route:
+          parameters:
+            $subscriptionID: $subscriptionID
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Subscription/StabilizationOptions/Index/_breadcrumb.html.twig'
+
+ksante_subscription_show_subscription_by_id:
+  path: /subscription_log/subscription/{id}
+  methods: [GET]
+  defaults:
+    _controller: ksante_subscription.controller.stabilization_options:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_admin_subscription_by_id
+      vars:
+        route:
+          parameters:
+            $id: $id
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Subscription/SubscriptionLog/Subscription/Index/_breadcrumb.html.twig'
+        header: ksante_subscription.ui.subscription
+
+ksante_subscription_show_subscription_by_id_from_order:
+  path: /subscription/{id}
+  methods: [GET]
+  defaults:
+    _controller: ksante_subscription.controller.stabilization_options:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      template: "@SyliusAdmin/Crud/index.html.twig"
+      grid: ksante_subscription_admin_subscription_by_id
+      vars:
+        route:
+          parameters:
+            $id: $id
+        templates:
+          breadcrumb: '@KsanteSubscriptionPlugin/Admin/Subscription/Index/_breadcrumb.html.twig'
+        header: ksante_subscription.ui.subscription
+
+ksante_subscription_admin_ajax_taxon_by_name_phrase:
+  path: /search
+  methods: [GET]
+  defaults:
+    _controller: sylius.controller.taxon:indexAction
+    _format: json
+    _sylius:
+      serialization_groups: [Autocomplete]
+      permission: true
+      repository:
+        method: findTaxonByNamePart
+        arguments:
+          code: $code   #Reported as a bug in sylius to change later on
+          phrase: $phrase
+          locale: null
+          #limit: 25
+
+ksante_subscription_admin_ajax_product_by_name_phrase:
+  path: /product/search
+  methods: [GET]
+  defaults:
+    _controller: sylius.controller.product:indexAction
+    _format: json
+    _sylius:
+      serialization_groups: [Default]
+      permission: true
+      repository:
+        method: findProductsByPhrase
+        arguments:
+          code: $code   #Reported as a bug in sylius to change later on
+          phrase: $phrase
+          #locale: expr:service('sylius.context.locale').getLocaleCode() #TO ADD THIS LATER ON
+          #limit: 30
+
+sylius_admin_ajax_product_variant_by_name_phrase:
+  path: /admin/product_variant/search
+  methods: [ GET ]
+  defaults:
+    _controller: sylius.controller.product_variant:indexAction
+    _format: json
+    _sylius:
+      serialization_groups: [ Default ]
+      permission: true
+      repository:
+        method: findProductVariantByPhrase
+        arguments:
+          code: $code   #Reported as a bug in sylius to change later on
+          phrase: $phrase
+            #locale: expr:service('sylius.context.locale').getLocaleCode() #TO ADD THIS LATER ON
+            #limit: 30
+
+ksante_subscription_update_subscription_next_order_date:
+  path: /subscription/updateNextOrderDate
+  methods: [POST]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::updateNextOrderDate
+    _format: json
+    _sylius:
+      permission: true
+
+sylius_admin_product_per_taxon_index:
+  path: /products/taxon/{taxonId}
+  methods: [GET]
+  defaults:
+    _controller: sylius.controller.product:indexAction
+    _sylius:
+      section: admin
+      permission: true
+      grid: sylius_admin_product_from_taxon
+      vars:
+        route:
+          parameters:
+            $taxonId: $taxonId
+        template: "@SyliusAdmin/Product/index.html.twig"
+        subheader: sylius.ui.manage_your_product_catalog
+        icon: cube
+
+ksante_subscription_admin_subscription_order_item_update_list:
+  path: /updateSelectedProducts/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionOrderController::updateSelectedProducts
+    _sylius:
+
+ksante_subscription_admin_subscription_order_item_update_list_post:
+  path: /updateSelectedProducts/{id}
+  methods: [ POST ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionOrderController::updateSelectedProductsPost
+    _sylius:
+
+ksante_subscription_admin_subscription_order_item_options_update:
+  path: /updateSelectedOptions/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionOrderController::updateSelectedOptions
+    _sylius:
+
+ksante_subscription_admin_subscription_order_item_options_update_list:
+  path: /updateSelectedOptions/{id}
+  methods: [ POST ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionOrderController::updateSelectedOptionsPost
+    _sylius:
+
+ksante_subscription_admin_subscription_csv_export:
+  path: /exportCSV
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::csvExport
+    _sylius:
+
+ksante_subscription_subscription_order_coupon_code:
+  path: /updateSubscriptionOrderCouponCode
+  methods: [POST]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionOrderController::updateSubscriptionOrderCouponCode
+    _format: json
+    _sylius:
+      permission: true

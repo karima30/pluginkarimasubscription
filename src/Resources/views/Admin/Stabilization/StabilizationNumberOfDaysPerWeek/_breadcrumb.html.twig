@@ -1,0 +1,11 @@
+{% import '@SyliusAdmin/Macro/breadcrumb.html.twig' as breadcrumb %}
+
+{% set breadcrumbs = [
+    { label: 'sylius.ui.administration'|trans, url: path('sylius_admin_dashboard') },
+    { label: 'ksante_subscription.ui.stabilization_options'|trans, url: path('ksante_subscription_admin_stabilization_options_index') },
+    { label: 'ksante_subscription.ui.stabilization_number_of_days_per_weeks'|trans, url: path('ksante_subscription_admin_stabilization_number_of_days_per_week_index') },
+    { label: app.request.attributes.get('id') },
+]
+%}
+
+{{ breadcrumb.crumble(breadcrumbs) }}

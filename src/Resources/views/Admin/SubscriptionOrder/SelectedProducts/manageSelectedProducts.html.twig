@@ -1,0 +1,28 @@
+{% extends '@SyliusAdmin/layout.html.twig' %}
+{% import '@SyliusAdmin/Macro/breadcrumb.html.twig' as breadcrumb %}
+{% form_theme form '@KsanteSubscriptionPlugin/Admin/Form/selectedProductsTheme.html.twig' %}
+{% block title %}{{ 'ksante_subscription.ui.manageSelectedProducts'|trans }}{% endblock %}
+
+{% block content %}
+
+    {% set breadcrumbs = [
+        { label: 'sylius.ui.administration'|trans, url: path('sylius_admin_dashboard') },
+        { label: 'ksante_subscription.ui.subscriptions'|trans, url: path('ksante_subscription_admin_subscription_index') },
+        { label: 'ksante_subscription.ui.subscription_orders'|trans },
+        { label: app.request.attributes.get('subscriptionID') },
+    ]
+    %}
+
+    {{ breadcrumb.crumble(breadcrumbs) }}
+
+        {{ form_errors(form) }}
+        <div class="ui one column stackable grid">
+            <div class="column">
+                <div class="ui segment">
+                    {{ form(form, { 'attr': {'class' : 'ui form' }}) }}
+                    <h3 style="float:right; margin-right: 40px; margin-top: -30px"><strong> {{ 'sylius.ui.total'|trans }} : {{ total }} </strong></h3>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+

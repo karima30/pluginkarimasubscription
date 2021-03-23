@@ -1,0 +1,279 @@
+services:
+  ksante_subscription_plugin.form.extension.type.product:
+    class: Ksante\SubscriptionPlugin\Form\Extension\ProductTypeExtension
+    arguments:
+      - '%sylius.model.product.class%'
+    tags:
+      - { name: form.type_extension, extended_type: Sylius\Bundle\ProductBundle\Form\Type\ProductType }
+
+  ksante_subscription_plugin.form.extension.type.product_translation:
+    class: Ksante\SubscriptionPlugin\Form\Extension\ProductTranslationTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Sylius\Bundle\ProductBundle\Form\Type\ProductTranslationType }
+
+  ksante_subscription_plugin.form.type.program:
+    class: Ksante\SubscriptionPlugin\Form\Type\ProgramType
+    calls:
+      - ['setContainer', ['@service_container', '%sylius.model.product.class%']]
+    arguments:
+      - '%ksante_subscription_plugin.model.program.class%'
+    tags:
+      - { name: form.type, alias: ksante_subscription_plugin }
+
+  ksante_subscription_plugin.form.type.program_details:
+    class: Ksante\SubscriptionPlugin\Form\Type\ProgramDetailsType
+    calls:
+      - ['setContainer', ['@service_container', '%sylius.model.product.class%']]
+    arguments:
+      - '%ksante_subscription.model.program_details.class%'
+    tags:
+      - { name: form.type, alias: ksante_subscription_plugin }
+
+  ksante_subscription_plugin.listener.admin.product.form.menu_builder:
+    class: Ksante\SubscriptionPlugin\Menu\Product\AdminProductFormMenuListener
+    tags:
+      - { name: kernel.event_listener, event: sylius.menu.admin.product.form, method: addItems }
+    calls:
+      - [ 'setContainer', [ '@service_container'] ]
+
+  ksante_subscription_plugin.listener.shop.menu_builder:
+    class: Ksante\SubscriptionPlugin\Menu\AdminMenuListener
+    tags:
+      - { name: kernel.event_listener, event: sylius.menu.admin.main, method: addItems }
+
+  Ksante\SubscriptionPlugin\Grid\ProgramGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_admin_program, method: editFields }
+
+  Ksante\SubscriptionPlugin\Controller\ProgramController:
+    arguments:
+      - '@ksante_subscription_plugin.service.program_service'
+      - '@router'
+    public: true
+
+  ksante_subscription_plugin.factory.product:
+    class: Ksante\SubscriptionPlugin\Factory\ProductFactory
+    decorates: sylius.factory.product
+    arguments: ['@ksante_subscription_plugin.factory.product.inner']
+    public: false
+
+  ksante_subscription_plugin.nutritional_information_image.type.form.type:
+    class: Ksante\SubscriptionPlugin\Form\Type\NutritionalInformationImageType
+    tags:
+      - { name: form.type }
+    arguments: ['Ksante\SubscriptionPlugin\Entity\NutritionalInformationImage']
+
+  ksante_subscription_plugin.listener.nutritional_information_image_upload:
+    class: Ksante\SubscriptionPlugin\EventListener\NutritionalInformationImageListener
+    autowire: true
+    autoconfigure: false
+    public: false
+    tags:
+      - { name: kernel.event_listener, event: sylius.product.pre_create, method: upload }
+      - { name: kernel.event_listener, event: sylius.product.pre_update, method: upload }
+      - { name: kernel.event_listener, event: ksante_subscription.product.pre_create, method: upload }
+      - { name: kernel.event_listener, event: ksante_subscription.product.pre_update, method: upload }
+
+  Ksante\SubscriptionPlugin\Controller\OrderController:
+    arguments:
+      - '@ksante_subscription_plugin.service.order_service'
+    public: true
+
+  ksante_subscription_plugin.listener.program_upload:
+    class: Ksante\SubscriptionPlugin\EventListener\ProgramUploadListener
+    autowire: true
+    autoconfigure: false
+    public: false
+    tags:
+      - { name: kernel.event_listener, event: ksante_subscription.product.pre_create, method: upload }
+      - { name: kernel.event_listener, event: ksante_subscription.product.pre_update, method: upload }
+
+  Ksante\SubscriptionPlugin\Grid\SubscriptionGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_admin_subscription, method: editFields }
+
+  Ksante\SubscriptionPlugin\Controller\SubscriptionController:
+    arguments:
+      - '@ksante_subscription_plugin.service.subscription_service'
+    public: true
+
+  Ksante\SubscriptionPlugin\Grid\OrderItemDetailsGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_admin_order_item_details, method: editFields }
+
+  Ksante\SubscriptionPlugin\Grid\OrderItemOptionsGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_admin_order_item_options, method: editFields }
+
+  ksante_subscription_plugin.listener.pre_order_delete_listener:
+    class: Ksante\SubscriptionPlugin\EventListener\PostDeleteOrderListener
+    autowire: true
+    autoconfigure: false
+    public: false
+    tags:
+      - { name: kernel.event_listener, event: sylius.order.post_delete, method: deleteSubscriptionOrder }
+
+  ksante_subscription_plugin.service.order_service:
+    class: Ksante\SubscriptionPlugin\Service\OrderService
+    arguments: ['@service_container', '@sylius.sequential_order_number_generator', "%sylius.model.order.class%"]
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  winzou\Bundle\StateMachineBundle\Command\winzouStateMachineDebugCommand:
+    tags: ['console.command']
+
+  ksante_subscription_plugin.service.program_service:
+    class: Ksante\SubscriptionPlugin\Service\ProgramService
+    arguments: ['@service_container']
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  ksante_subscription_plugin.service.subscription_service:
+    class: Ksante\SubscriptionPlugin\Service\SubscriptionService
+    arguments: ['@service_container', '@ksante_subscription_plugin.service.order_service', '@ksante_subscription_plugin.service.emailing_service', '%sylius.model.order.class%', '@sylius.sequential_order_number_generator']
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  ksante_subscription_plugin.form.type.product_selected_programs_list:
+    class: Ksante\SubscriptionPlugin\Form\Type\ProductSelectedProgramsType
+    arguments:
+      - '%ksante_subscription_plugin.model.product_selected_programs.class%'
+    calls:
+      - ['setProductClass', ['%sylius.model.product.class%']]
+    tags:
+      - { name: form.type, alias: ksante_subscription_plugin }
+
+  ksante_subscription_plugin.listener.setting_product_selected_programs:
+    class: Ksante\SubscriptionPlugin\EventListener\SettingProductSelectedProgramsListener
+    autowire: true
+    autoconfigure: false
+    public: false
+    tags:
+      - { name: kernel.event_listener, event: sylius.product.post_create, method: settingProductSelectedPrograms }
+      - { name: kernel.event_listener, event: sylius.product.post_update, method: settingProductSelectedPrograms }
+
+  ksante_subscription_plugin.listener.setting_products_details:
+    class: Ksante\SubscriptionPlugin\EventListener\SettingProgramDetailsListener
+    autowire: true
+    autoconfigure: false
+    public: false
+    tags:
+      - { name: kernel.event_listener, event: ksante_subscription.product.post_create, method: settingProgramDetails }
+      - { name: kernel.event_listener, event: ksante_subscription.product.post_update, method: settingProgramDetails }
+
+  ksante_subscription_plugin.listener.customer_show_menu_builder:
+    class: Ksante\SubscriptionPlugin\Menu\Customer\CustomerShowMenuListener
+    tags:
+      - { name: kernel.event_listener, event: sylius.menu.admin.customer.show, method: addShowSubscriptionsToAdminCustomer }
+
+  Ksante\SubscriptionPlugin\Grid\SubscriptionByCustomerGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_admin_subscription_by_customer, method: editFields }
+
+  Ksante\SubscriptionPlugin\Grid\SubscriptionOrderItemOptionsGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_admin_subscription_order_options, method: editFields }
+
+  Ksante\SubscriptionPlugin\Grid\SubscriptionOrderItemDetailsGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_admin_subscription_order_item_details, method: editFields }
+
+  Ksante\SubscriptionPlugin\Grid\SubscriptionOrderGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_admin_subscription_order_by_subscription, method: editFields }
+
+  Ksante\SubscriptionPlugin\Grid\SubscriptionLogGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_admin_subscription_log, method: editFields }
+
+  Ksante\SubscriptionPlugin\Grid\StabilizationOptionsGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_stabilization_options, method: editFields }
+
+  Ksante\SubscriptionPlugin\Controller\StabilizationOptionsController:
+    arguments:
+      - '@router'
+      - '@ksante_subscription_plugin.service.stabilization_options_service'
+    public: true
+
+  ksante_subscription_plugin.service.stabilization_options_service:
+    class: Ksante\SubscriptionPlugin\Service\StabilizationOptionsService
+    arguments: ['@service_container']
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  Ksante\SubscriptionPlugin\Grid\StabilizationOptionsBySubscriptionGridListener:
+    tags:
+      - { name: kernel.event_listener, event: sylius.grid.ksante_subscription_show_stabilization_options_by_subscription, method: editFields }
+
+  ksante_subscription_plugin.form.type.program_categories:
+    class: Ksante\SubscriptionPlugin\Form\Type\ProgramCategoriesType
+    arguments:
+      - '%ksante_subscription.model.program_categories_detail.class%'
+    tags:
+      - { name: form.type, alias: ksante_subscription_plugin }
+
+  ksante_subscription_plugin.subscription_order_product.type.form.type:
+    class: Ksante\SubscriptionPlugin\Form\Type\SubscriptionOrderProductsType
+    tags:
+      - { name: form.type }
+    arguments: [ 'Ksante\SubscriptionPlugin\Entity\SubscriptionOrderItem' ]
+
+  ksante_subscription_plugin.subscription_order_item_details.type.form.type:
+    class: Ksante\SubscriptionPlugin\Form\Type\SubscriptionOrderItemDetailsType
+    tags:
+      - { name: form.type }
+    calls:
+      - [ 'setContainer', [ '@service_container' ] ]
+      - [ 'setClasses', [ '%sylius.model.product_variant.class%', '%sylius.model.taxon.class%' ] ]
+    arguments: [ 'Ksante\SubscriptionPlugin\Entity\SubscriptionOrderItemDetails' ]
+
+  ksante_subscription_plugin.subscription_order_item_options.type.form.type:
+    class: Ksante\SubscriptionPlugin\Form\Type\SubscriptionOrderItemType
+    tags:
+      - { name: form.type }
+    calls:
+      - [ 'setContainer', [ '@service_container' ] ]
+      - [ 'setClasses', [ '%sylius.model.product_variant.class%', '%sylius.model.taxon.class%' ] ]
+    arguments: [ 'Ksante\SubscriptionPlugin\Entity\SubscriptionOrderItem' ]
+
+  Ksante\SubscriptionPlugin\Controller\SubscriptionOrderController:
+    arguments:
+      - '@ksante_subscription_plugin.service.subscription_order_service'
+      - '@router'
+    public: true
+
+  ksante_subscription_plugin.service.subscription_order_service:
+    class: Ksante\SubscriptionPlugin\Service\SubscriptionOrderService
+    arguments: [ '@service_container' ]
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  ksante_subscription_plugin.subscription_order_items.type.form.type:
+    class: Ksante\SubscriptionPlugin\Form\Type\SubscriptionOrderOptionsType
+    tags:
+      - { name: form.type }
+    arguments: [ 'Ksante\SubscriptionPlugin\Entity\SubscriptionOrder' ]
+
+  ksante_subscription_plugin.service.emailing_service:
+    class: Ksante\SubscriptionPlugin\Service\EmailingService
+    arguments: [ '@service_container' ]
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  ksante_subscription_plugin.stabilization_category.type.form.type:
+    class: Ksante\SubscriptionPlugin\Form\Type\StabilizationCategoryType
+    tags:
+      - { name: form.type }
+    arguments: [ 'Ksante\SubscriptionPlugin\Entity\StabilizationCategory' ]
+
+  ksante_subscription_plugin.listener.order_show_menu_builder:
+    class: Ksante\SubscriptionPlugin\Menu\Order\OrderMenuListener
+    tags:
+      - { name: kernel.event_listener, event: sylius.menu.admin.order.show, method: addShowSubscriptionToOrderMenu }

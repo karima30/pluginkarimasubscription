@@ -1,0 +1,15 @@
+ksante_subscription:
+  flashes:
+    updatedSubscriptionStatus: Statut de l'abonnement est mis à jour
+    subscriptionDoesNotExist: L'identifiant d'abonnement n'existe pas
+    updatedNextOrderDate: La date de la prochaine commande a été mise à jour avec succès
+    errorEmailing: Une erreur s'est produite lors de l'envoi de l'e-mail
+    unfulfilledProgramCategories: Vous n'avez pas sélectionné toutes les catégories obligatoires du programme
+    invalidSelectedCategory: La catégorie fournie n'existe pas ou n'est pas associée au programme
+    invalidProductQuantity: La quantité de produits choisie n'est pas valide pour la catégorie
+    emptySubscriptionsList: La liste des abonnements est vide
+    unselectedStabilizationCategory: La catégorie de stabilisation choisie n'a pas été sélectionnée
+    unselectedCategoryInStabilizationOptions: La catégorie sélectionnée n'appartient pas aux options de stabilisation choisies
+    notEnoughParametersToUpdateSubscriptionOrderCouponCode: Vous n'avez pas fourni suffisamment de paramètres pour mettre à jour le code promo
+    subscriptionOrderDoesNotExist: La commande d'abonnement fournie n'existe pas
+    promotionCouponDoesNotExist: Le code de coupon fourni n'existe pas

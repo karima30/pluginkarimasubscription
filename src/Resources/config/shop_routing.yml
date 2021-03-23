@@ -1,0 +1,57 @@
+# Delete these routes and define your own shop routes here
+
+ksante_subscription_create_first_order_along_with_subscription:
+  path: /createOrderAlongWithSubscription
+  methods: [ POST ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\OrderController::createOrderAlongWithSubscription
+    _sylius:
+
+ksante_subscription_get_stabilization_options_by_customer:
+  path: /getStabilizationOptionsByCustomer/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\StabilizationOptionsController::getStabilizationOptionsByCustomer
+    _sylius:
+
+ksante_subscription_updating_the_subscription_order_selected_products:
+  path: /updateSelectedProducts
+  methods: [ POST ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionOrderController::updateSubscriptionOrderSelectedProducts
+    _sylius:
+
+ksante_subscription_updating_the_subscription_order_selected_options:
+  path: /updateSelectedOptions
+  methods: [ POST ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionOrderController::updateSubscriptionOrderSelectedOptions
+    _sylius:
+
+ksante_subscription_pause_subscription_by_user:
+  path: /pauseSubscription
+  methods: [ POST ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::pauseSubscriptionByUser
+    _sylius:
+
+ksante_subscription_auto_pause_subscription_by_user:
+  path: /autoPauseSubscription
+  methods: [ POST ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::autoPauseSubscriptionByUser
+    _sylius:
+
+ksante_subscription_resume_subscription_by_user:
+  path: /resumeSubscription
+  methods: [ POST ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::resumeSubscriptionByUser
+    _sylius:
+
+ksante_subscription_get_subscriptions_by_customer:
+  path: /getSubscriptionsNyCustomer/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: Ksante\SubscriptionPlugin\Controller\SubscriptionController::getSubscriptionsByCustomerID
+    _sylius:

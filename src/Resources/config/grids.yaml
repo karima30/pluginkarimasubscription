@@ -1,0 +1,1235 @@
+sylius_grid:
+  templates:
+    action:
+      duplicateProgram: "@KsanteSubscriptionPlugin/Resources/views/grid/Action/duplicateProgram.html.twig"
+      generate_stabilization_options: "@KsanteSubscriptionPlugin/grid/Action/generateStablilizationOptions.html.twig"
+      stabilization_number_of_days_per_week: "@KsanteSubscriptionPlugin/grid/Action/manageStabilizationNumberOfDaysPerWeek.html.twig"
+      stabilization_number_of_weeks_interval: "@KsanteSubscriptionPlugin/grid/Action/manageStabilizationNumberOfWeeksInterval.html.twig"
+      stabilization_categories: "@KsanteSubscriptionPlugin/grid/Action/manageStabilizationCategories.html.twig"
+      stimulateOrderGenerator: "@KsanteSubscriptionPlugin/grid/Action/stimulateOrderGenerator.html.twig"
+      exportToCSV: "@KsanteSubscriptionPlugin/grid/Action/exportToCSV.html.twig"
+
+  grids:
+    sylius_admin_product_from_taxon:
+      driver:
+        name: doctrine/orm
+        options:
+          class: "%sylius.model.product.class%"
+          repository:
+            method: getProductsByTaxonID
+            arguments: [$taxonId]
+      sorting:
+        position: asc
+      fields:
+        position:
+          type: twig
+          label: sylius.ui.position
+          path: .
+          sortable: productTaxon.position
+          options:
+            template: "@SyliusAdmin/Product/Grid/Field/position.html.twig"
+      actions:
+        main:
+          update_positions:
+            type: update_product_positions
+
+    ksante_subscription_admin_program:
+      driver:
+        name: doctrine/orm
+        options:
+          class: "%sylius.model.product.class%"
+          repository:
+            method: getPrograms
+            arguments: [true]
+      limits: [50, 100]
+      fields:
+        name:
+          type: string
+          label: sylius.ui.name
+      actions:
+        main:
+          create:
+            type: create
+            options:
+              link:
+                route: ksante_subscription_admin_product.create_simple
+        item:
+          update:
+            type: update
+          delete:
+            type: delete
+          duplicate:
+            type: duplicateProgram
+            label: ksante_subscription.ui.duplicate
+            options:
+              link:
+                route: ksante_subscription_duplicate_program
+                parameters:
+                  id: resource.id
+      filters:
+        search:
+          type: string
+          label: sylius.ui.search
+          options:
+            fields: [code]
+
+    sylius_admin_product:
+      driver:
+        name: doctrine/orm
+        options:
+          class: "%sylius.model.product.class%"
+          repository:
+            method: getPrograms
+            arguments: [false]
+      limits: [50, 100]
+
+    ksante_subscription_admin_subscription:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\Subscription
+          repository:
+            method: getPayedSubscriptions
+            arguments: ["%sylius.model.order.class%"]
+      sorting:
+        firstOrderDate: desc
+      limits: [ 50, 100 ]
+      fields:
+        customer:
+          type: twig
+          label: sylius.ui.customer
+          sortable: customer.lastName
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/customer.html.twig"
+        channel:
+          type: twig
+          label: sylius.ui.channel
+          sortable: channel.code
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/channel.html.twig"
+        state:
+          type: twig
+          label: sylius.ui.status
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/state.html.twig"
+            vars:
+              labels: "@KsanteSubscriptionPlugin/Admin/Subscription/Label/State"
+        completedOrdersCount:
+          type: string
+          label: ksante_subscription.ui.completedOrdersCount
+        shippedOrdersCount:
+          type: string
+          label: ksante_subscription.ui.shippedOrdersCount
+        firstOrderDate:
+          type: datetime
+          label: ksante_subscription.ui.firstOrderDate
+          sortable: ~
+        lastOrderDate:
+          type: datetime
+          label: ksante_subscription.ui.lastOrderDate
+          sortable: ~
+        nextOrderDate:
+          type: twig
+          label: ksante_subscription.ui.nextOrderDate
+          path: .
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/nextOrderDate.html.twig"
+          sortable: ~
+      actions:
+        main:
+          exportToCSV:
+            type: exportToCSV
+            label: ksante_subscription.ui.exportToCSV
+            options:
+              link:
+                route: ksante_subscription_admin_subscription_csv_export
+        item:
+          manageSubscription:
+            type: links
+            label: ksante_subscription.ui.manage_subscriptions
+            options:
+              icon: cog
+              links:
+                showSubscription:
+                  icon: icon search
+                  label: sylius.ui.orders
+                  route: ksante_subscription_subscription_show_orders
+                  parameters:
+                    subscriptionID: resource.id
+                showSubscriptionorders:
+                  icon: icon search
+                  label: ksante_subscription.ui.subscription_orders
+                  route: ksante_subscription_subscription_order_show_subscription_orders
+                  parameters:
+                    subscriptionID: resource.id
+                show_stabilization_options:
+                  icon: icon search
+                  label: ksante_subscription.ui.stabilization_options
+                  route: ksante_subscription_show_stabilization_options_by_subscription
+                  visible: resource.isStabilizationProgram
+                  parameters:
+                    subscriptionID: resource.id
+                pauseSubscription:
+                  label: ksante_subscription.ui.pause_subscription
+                  icon: pause circle outline
+                  route: ksante_subscription_pause_subscription
+                  visible: resource.isSubscriptionOnGoing
+                  parameters:
+                    id: resource.id
+                autoPauseSubscription:
+                  label: ksante_subscription.ui.pause_auto_subscription
+                  icon: pause circle outline
+                  route: ksante_subscription_auto_pause_subscription
+                  visible: resource.isSubscriptionOnGoing
+                  parameters:
+                    id: resource.id
+                unsubscribe:
+                  label: ksante_subscription.ui.unsubscribe
+                  icon: stop
+                  route: ksante_subscription_unsubscribe
+                  visible: resource.showUnsubscribe
+                  parameters:
+                    id: resource.id
+                resendPaymentEmail:
+                  label: ksante_subscription.ui.resendPaymentEmail
+                  icon: redo
+                  route: ksante_subscription_resend_payment_email
+                  parameters:
+                    id: resource.id
+                accessPayboxPage:
+                  label: ksante_subscription.ui.accessPayboxPage
+                  icon: arrow right
+                  route: ksante_subscription_access_paybox_page
+                  parameters:
+                    id: resource.id
+                resumeSubscription:
+                  label: ksante_subscription.ui.resumeSubscription
+                  icon: linkify
+                  route: ksante_subscription_resume_subscription
+                  visible: resource.isSubscriptionOnPause
+                  parameters:
+                    id: resource.id
+                showLogs:
+                  type: show
+                  label: ksante_subscription.ui.subscription_logs
+                  icon: clipboard outline
+                  route: ksante_subscription_subscription_show_states_logs_by_subscription
+                  parameters:
+                    subscriptionID: resource.id
+      filters:
+        customer:
+          type: string
+          label: sylius.ui.customer
+          options:
+            fields: [ customer.email, customer.firstName, customer.lastName ]
+        firstOrderDate:
+          type: date
+          label: ksante_subscription.ui.firstOrderDate
+          options:
+            field: firstOrderDate
+            inclusive_to: true
+        lastOrderDate:
+          type: date
+          label: ksante_subscription.ui.lastOrderDate
+          options:
+            field: lastOrderDate
+            inclusive_to: true
+        nextOrderDate:
+          type: date
+          label: ksante_subscription.ui.lastOrderDate
+          options:
+            field: lastOrderDate
+            inclusive_to: true
+        program:
+          type: string
+          label: ksante_subscription.ui.program
+          options:
+            fields: [ program.code ]
+        channel:
+          type: entity
+          label: sylius.ui.channel
+          form_options:
+            class: "%sylius.model.channel.class%"
+
+    ksante_subscription_admin_order_by_subscription:
+      driver:
+        name: doctrine/orm
+        options:
+          class: "%sylius.model.order.class%"
+          repository:
+            method: findOrdersBySubscription
+            arguments:
+              subscriptionID: $subscriptionID
+      limits: [50, 100]
+      sorting:
+        number: desc
+      fields:
+        number:
+          type: twig
+          label: sylius.ui.number
+          path: .
+          sortable: ~
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/number.html.twig"
+        customer:
+          type: twig
+          label: sylius.ui.customer
+          sortable: customer.lastName
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/customer.html.twig"
+        date:
+          type: datetime
+          label: sylius.ui.date
+          path: checkoutCompletedAt
+          sortable: checkoutCompletedAt
+          options:
+            format: d-m-Y H:i:s
+        channel:
+          type: twig
+          label: sylius.ui.channel
+          sortable: channel.code
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/channel.html.twig"
+        state:
+          type: twig
+          label: sylius.ui.state
+          sortable: ~
+          options:
+            template: "@SyliusUi/Grid/Field/state.html.twig"
+            vars:
+              labels: "@SyliusAdmin/Order/Label/State"
+        paymentState:
+          type: twig
+          label: sylius.ui.payment_state
+          sortable: ~
+          options:
+            template: "@SyliusUi/Grid/Field/state.html.twig"
+            vars:
+              labels: "@SyliusAdmin/Order/Label/PaymentState"
+        shippingState:
+          type: twig
+          label: sylius.ui.shipping_state
+          sortable: ~
+          options:
+            template: "@SyliusUi/Grid/Field/state.html.twig"
+            vars:
+              labels: "@SyliusAdmin/Order/Label/ShippingState"
+        total:
+          type: twig
+          label: sylius.ui.total
+          path: .
+          sortable: total
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/total.html.twig"
+        currencyCode:
+          type: string
+          label: sylius.ui.currency
+          sortable: ~
+        isRegularizationOrder:
+          type: twig
+          label: ksante_subscription.ui.isRegularization
+          options:
+            template: "@SyliusUi/Grid/Field/yesNo.html.twig"
+      filters:
+        number:
+          type: string
+          label: sylius.ui.number
+        customer:
+          type: string
+          label: sylius.ui.customer
+          options:
+            fields: [customer.email, customer.firstName, customer.lastName]
+        date:
+          type: date
+          label: sylius.ui.date
+          options:
+            field: checkoutCompletedAt
+            inclusive_to: true
+        channel:
+          type: entity
+          label: sylius.ui.channel
+          form_options:
+            class: "%sylius.model.channel.class%"
+        total:
+          type: money
+          label: sylius.ui.total
+          options:
+            currency_field: currencyCode
+        shipping_method:
+          type: entity
+          label: sylius.ui.shipping_method
+          options:
+            fields: [shipments.method]
+          form_options:
+            class: "%sylius.model.shipping_method.class%"
+      actions:
+        item:
+          show:
+            type: show
+            options:
+              link:
+                route: sylius_admin_order_show
+                parameters:
+                  id: resource.id
+          showOrderDetails:
+            type: links
+            label: ksante_subscription.ui.moreDetails
+            options:
+              icon: cog
+              links:
+                showSelectedProductDetails:
+                  icon: icon search
+                  label: ksante_subscription.ui.show_order_item_details
+                  route: ksante_subscription_subscription_show_order_items_details
+                  parameters:
+                    orderID: resource.id
+                showSelectedOptionsDetails:
+                  icon: icon search
+                  label: ksante_subscription.ui.selected_options
+                  route: ksante_subscription_subscription_show_order_items_options
+                  parameters:
+                    orderID: resource.id
+
+    ksante_subscription_admin_order_item_details:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\OrderItemDetails
+          repository:
+            method: findOrderItemDetailsByOrder
+            arguments:
+              orderID: $orderID
+      limits: [ 50, 100 ]
+      fields:
+        quantity:
+          type: string
+          label: ksante_subscription.ui.quantity
+        taxon:
+          type: twig
+          label: sylius.ui.taxonomy
+          options:
+            template: "@SyliusAdmin/Product/Grid/Field/mainTaxon.html.twig"
+
+    ksante_subscription_admin_order_item_options:
+      driver:
+        name: doctrine/orm
+        options:
+          class: "%sylius.model.order_item.class%"
+          repository:
+            method: findOptionsOrderItemByOrderId
+            arguments:
+              orderID: $orderID
+      limits: [ 50, 100 ]
+      fields:
+        quantity:
+          type: string
+          label: ksante_subscription.ui.quantity
+        taxon:
+          type: twig
+          label: sylius.ui.taxonomy
+          options:
+            template: "@SyliusAdmin/Product/Grid/Field/mainTaxon.html.twig"
+
+    sylius_admin_customer:
+      driver:
+        name: doctrine/orm
+        options:
+          class: "%sylius.model.customer.class%"
+      actions:
+        main:
+          create:
+            type: create
+        item:
+          show_orders:
+            enabled: false
+          moreDetails:
+            type: links
+            label: ksante_subscription.ui.moreDetails
+            options:
+              icon: cog
+              links:
+                showSubscriptions:
+                  icon: icon search
+                  label: ksante_subscription.ui.show_subscriptions
+                  route: ksante_subscription_customer_show_subscriptions
+                  parameters:
+                    customerID: resource.id
+                showOrders:
+                  icon: icon search
+                  label: sylius.ui.show_orders
+                  route: sylius_admin_customer_order_index
+                  parameters:
+                    id: resource.id
+
+    ksante_subscription_admin_subscription_by_customer:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\Subscription
+          repository:
+            method: getPayedSubscriptionsByCustomer
+            arguments:
+              customerID: $customerID
+              orderClass: "%sylius.model.order.class%"
+      sorting:
+        firstOrderDate: desc
+      limits: [ 50, 100 ]
+      fields:
+        customer:
+          type: twig
+          label: sylius.ui.customer
+          sortable: customer.lastName
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/customer.html.twig"
+        channel:
+          type: twig
+          label: sylius.ui.channel
+          sortable: channel.code
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/channel.html.twig"
+        state:
+          type: twig
+          label: sylius.ui.status
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/state.html.twig"
+            vars:
+              labels: "@KsanteSubscriptionPlugin/Admin/Subscription/Label/State"
+        completedOrdersCount:
+          type: string
+          label: ksante_subscription.ui.completedOrdersCount
+        shippedOrdersCount:
+          type: string
+          label: ksante_subscription.ui.shippedOrdersCount
+        firstOrderDate:
+          type: datetime
+          label: ksante_subscription.ui.firstOrderDate
+          sortable: ~
+        lastOrderDate:
+          type: datetime
+          label: ksante_subscription.ui.lastOrderDate
+          sortable: ~
+        nextOrderDate:
+          type: twig
+          label: ksante_subscription.ui.nextOrderDate
+          path: .
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/nextOrderDate.html.twig"
+          sortable: ~
+      actions:
+        item:
+          manageSubscription:
+            type: links
+            label: ksante_subscription.ui.manage_subscriptions
+            options:
+              icon: cog
+              links:
+                showSubscription:
+                  icon: icon search
+                  label: sylius.ui.orders
+                  route: ksante_subscription_subscription_show_orders
+                  parameters:
+                    subscriptionID: resource.id
+                showSubscriptionorders:
+                  icon: icon search
+                  label: ksante_subscription.ui.subscription_orders
+                  route: ksante_subscription_subscription_order_show_subscription_orders
+                  parameters:
+                    subscriptionID: resource.id
+                show_stabilization_options:
+                  icon: icon search
+                  label: ksante_subscription.ui.stabilization_options
+                  route: ksante_subscription_show_stabilization_options_by_subscription
+                  visible: resource.isStabilizationProgram
+                  parameters:
+                    subscriptionID: resource.id
+                pauseSubscription:
+                  label: ksante_subscription.ui.pause_subscription
+                  icon: pause circle outline
+                  route: ksante_subscription_pause_subscription
+                  visible: resource.isSubscriptionOnGoing
+                  parameters:
+                    id: resource.id
+                autoPauseSubscription:
+                  label: ksante_subscription.ui.pause_auto_subscription
+                  icon: pause circle outline
+                  route: ksante_subscription_auto_pause_subscription
+                  visible: resource.isSubscriptionOnGoing
+                  parameters:
+                    id: resource.id
+                unsubscribe:
+                  label: ksante_subscription.ui.unsubscribe
+                  icon: stop
+                  route: ksante_subscription_unsubscribe
+                  visible: resource.showUnsubscribe
+                  parameters:
+                    id: resource.id
+                resendPaymentEmail:
+                  label: ksante_subscription.ui.resendPaymentEmail
+                  icon: redo
+                  route: ksante_subscription_resend_payment_email
+                  parameters:
+                    id: resource.id
+                accessPayboxPage:
+                  label: ksante_subscription.ui.accessPayboxPage
+                  icon: arrow right
+                  route: ksante_subscription_access_paybox_page
+                  parameters:
+                    id: resource.id
+                resumeSubscription:
+                  label: ksante_subscription.ui.resumeSubscription
+                  icon: linkify
+                  route: ksante_subscription_resume_subscription
+                  visible: resource.isSubscriptionOnPause
+                  parameters:
+                    id: resource.id
+                showLogs:
+                  type: show
+                  label: ksante_subscription.ui.subscription_logs
+                  icon: clipboard outline
+                  route: ksante_subscription_subscription_show_states_logs_by_subscription
+                  parameters:
+                    subscriptionID: resource.id
+      filters:
+        customer:
+          type: string
+          label: sylius.ui.customer
+          options:
+            fields: [ customer.email, customer.firstName, customer.lastName ]
+        firstOrderDate:
+          type: date
+          label: ksante_subscription.ui.firstOrderDate
+          options:
+            field: firstOrderDate
+            inclusive_to: true
+        lastOrderDate:
+          type: date
+          label: ksante_subscription.ui.lastOrderDate
+          options:
+            field: lastOrderDate
+            inclusive_to: true
+        nextOrderDate:
+          type: date
+          label: ksante_subscription.ui.lastOrderDate
+          options:
+            field: lastOrderDate
+            inclusive_to: true
+        program:
+          type: string
+          label: ksante_subscription.ui.program
+          options:
+            fields: [ program.code ]
+        channel:
+          type: entity
+          label: sylius.ui.channel
+          form_options:
+            class: "%sylius.model.channel.class%"
+
+    ksante_subscription_admin_subscription_order_by_subscription:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\SubscriptionOrder
+          repository:
+            method: findSubscriptionOrdersBySubscriptionID
+            arguments:
+              subscriptionID: $subscriptionID
+      limits: [50, 100]
+      fields:
+        customer:
+          type: twig
+          label: sylius.ui.customer
+          sortable: customer.lastName
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/customer.html.twig"
+        channel:
+          type: twig
+          label: sylius.ui.channel
+          sortable: channel.code
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/channel.html.twig"
+        isValidated:
+          type: twig
+          label: ksante_subscription.ui.isValidated
+          options:
+            template: "@SyliusUi/Grid/Field/yesNo.html.twig"
+        currencyCode:
+          type: string
+          label: sylius.ui.currency
+          sortable: ~
+        expectedDeliveryDate:
+          type: datetime
+          label: ksante_subscription.ui.expectedDeliveryDate
+          sortable: expectedDeliveryDate
+          options:
+            format: d-m-Y H:i:s
+        createdAt:
+          type: datetime
+          label: sylius.ui.created_at
+          sortable: createdAt
+          options:
+            format: d-m-Y H:i:s
+        couponCode:
+          type: twig
+          label: sylius.ui.coupon
+          path: .
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/subscriptionOrderCouponCode.html.twig"
+      filters:
+        customer:
+          type: string
+          label: sylius.ui.customer
+          options:
+            fields: [ customer.email, customer.firstName, customer.lastName ]
+        expectedDeliveryDate:
+          type: date
+          label: sylius.ui.date
+          options:
+            field: expectedDeliveryDate
+            inclusive_to: true
+        channel:
+          type: entity
+          label: sylius.ui.channel
+          form_options:
+            class: "%sylius.model.channel.class%"
+      actions:
+        main:
+          stimulateOrderGenerator:
+            type: stimulateOrderGenerator
+            label: ksante_subscription.ui.stimulateOrderGeneration
+            options:
+              link:
+                route: ksante_subscription_generate_new_order_from_subscription_order
+                parameters:
+                  subscriptionID: $subscriptionID
+        item:
+          showSubscriptionOrderDetails:
+            type: links
+            label: ksante_subscription.ui.moreDetails
+            options:
+              icon: cog
+              links:
+                showSubscriptionOrderItemDetails:
+                  icon: icon search
+                  label: ksante_subscription.ui.show_subscription_order_item_details
+                  route: ksante_subscription_subscription_show_subscription_order_items_details
+                  parameters:
+                    orderID: resource.id
+                showSubscriptionOrderItems:
+                  icon: icon search
+                  label: ksante_subscription.ui.show_subscription_order_options
+                  route: ksante_subscription_subscription_show_subscription_order_options
+                  parameters:
+                    orderID: resource.id
+          manageProducts:
+            type: links
+            label: ksante_subscription.ui.manageSelectedProducts
+            options:
+              visible: resource.isNotConvertedToOrder
+              icon: cog
+              links:
+                manageSelectedProducts:
+                  icon: cog
+                  label: ksante_subscription.ui.selected_products
+                  route: ksante_subscription_admin_subscription_order_item_update_list
+                  parameters:
+                    id: resource.id
+                manageSelectedOptions:
+                  icon: cog
+                  label: ksante_subscription.ui.selected_options
+                  route: ksante_subscription_admin_subscription_order_item_options_update
+                  parameters:
+                    id: resource.id
+
+    ksante_subscription_admin_subscription_order_item_details:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\SubscriptionOrderItemDetails
+          repository:
+            method: findItemDetailsByOrderId
+            arguments:
+              orderID: $orderID
+      limits: [ 50, 100 ]
+      fields:
+        quantity:
+          type: string
+          label: ksante_subscription.ui.quantity
+        taxon:
+          type: twig
+          label: sylius.ui.taxonomy
+          options:
+            template: "@SyliusAdmin/Product/Grid/Field/mainTaxon.html.twig"
+
+    ksante_subscription_admin_subscription_order_options:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\SubscriptionOrderItem
+          repository:
+            method: findOptionsSubscriptionOrderItemBySubscriptionOrderId
+            arguments:
+              orderID: $orderID
+      limits: [ 50, 100 ]
+      fields:
+        quantity:
+          type: string
+          label: ksante_subscription.ui.quantity
+        taxon:
+          type: twig
+          label: sylius.ui.taxonomy
+          options:
+            template: "@SyliusAdmin/Product/Grid/Field/mainTaxon.html.twig"
+
+    ksante_subscription_admin_subscription_log_by_subscription:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\SubscriptionLog
+          repository:
+            method: findLogsBySubscription
+            arguments:
+              subscriptionID: $subscriptionID
+      limits: [50, 100]
+      sorting:
+        createdAt: desc
+      fields:
+        createdAt:
+          type: datetime
+          label: sylius.ui.date
+          sortable: ~
+        user:
+          type: twig
+          label: ksante_subscription.ui.user
+          sortable: user.lastName
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/customer.html.twig"
+        previousStatus:
+          type: twig
+          label: ksante_subscription.ui.previous_status
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/state.html.twig"
+            vars:
+              labels: "@KsanteSubscriptionPlugin/Admin/Subscription/Label/State"
+        newStatus:
+          type: twig
+          label: ksante_subscription.ui.new_status
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/state.html.twig"
+            vars:
+              labels: "@KsanteSubscriptionPlugin/Admin/Subscription/Label/State"
+        isUpdatedByCustomer:
+          type: twig
+          label: ksante_subscription.ui.isUpdatedByCustomer
+          options:
+            template: "@SyliusUi/Grid/Field/yesNo.html.twig"
+      filters:
+        agent:
+          type: string
+          label: ksante_subscription.ui.agent
+          options:
+            fields: [ agent.email, agent.firstName, agent.lastName ]
+        createdAt:
+          type: date
+          label: sylius.ui.date
+          options:
+            field: createdAt
+            inclusive_to: true
+
+
+    ksante_subscription_admin_subscription_log:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\SubscriptionLog
+      limits: [50, 100]
+      sorting:
+        createdAt: desc
+      fields:
+        createdAt:
+          type: datetime
+          label: sylius.ui.date
+          sortable: ~
+        user:
+          type: twig
+          label: ksante_subscription.ui.user
+          sortable: user.lastName
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/customer.html.twig"
+        previousStatus:
+          type: twig
+          label: ksante_subscription.ui.previous_status
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/state.html.twig"
+            vars:
+              labels: "@KsanteSubscriptionPlugin/Admin/Subscription/Label/State"
+        newStatus:
+          type: twig
+          label: ksante_subscription.ui.new_status
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/state.html.twig"
+            vars:
+              labels: "@KsanteSubscriptionPlugin/Admin/Subscription/Label/State"
+      filters:
+        agent:
+          type: string
+          label: ksante_subscription.ui.agent
+          options:
+            fields: [ agent.email, agent.firstName, agent.lastName ]
+        createdAt:
+          type: date
+          label: sylius.ui.date
+          options:
+            field: createdAt
+            inclusive_to: true
+
+
+    ksante_subscription_stabilization_number_of_days_per_week:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\StabilizationNumberOfDaysPerWeek
+      limits: [ 50, 100 ]
+      fields:
+        numberOfDays:
+          type: string
+          label: ksante_subscription.ui.stabilization_number_of_days_per_week
+        description:
+          type: string
+          label: sylius.ui.description
+      actions:
+        main:
+          create:
+            type: create
+        item:
+          update:
+            type: update
+          delete:
+            type: delete
+
+    ksante_subscription_stabilization_number_of_weeks_interval:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\StabilizationNumberOfWeeksInterval
+      limits: [ 50, 100 ]
+      fields:
+        fromWeek:
+          type: string
+          label: ksante_subscription.ui.stabilization_from_number_of_weeks
+        toWeek:
+          type: string
+          label: ksante_subscription.ui.stabilization_to_number_of_weeks
+        description:
+          type: string
+          label: sylius.ui.description
+      actions:
+        main:
+          create:
+            type: create
+        item:
+          update:
+            type: update
+          delete:
+            type: delete
+
+    ksante_subscription_stabilization_category:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\StabilizationCategory
+      limits: [ 50, 100 ]
+      fields:
+        name:
+          type: string
+          label: sylius.ui.name
+        description:
+          type: string
+          label: sylius.ui.description
+        categoryTaxon:
+          type: twig
+          label: sylius.ui.taxonomy
+          options:
+            template: "@SyliusAdmin/Product/Grid/Field/mainTaxon.html.twig"
+      actions:
+        main:
+          create:
+            type: create
+        item:
+          update:
+            type: update
+          delete:
+            type: delete
+      filters:
+        search:
+          type: string
+          label: sylius.ui.search
+          options:
+            fields: [ name ]
+
+    ksante_subscription_stabilization_options:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\StabilizationOptions
+      limits: [ 50, 100 ]
+      fields:
+        channel:
+          type: twig
+          label: sylius.ui.channel
+          sortable: channel.code
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/channel.html.twig"
+        currencyCode:
+          type: string
+          label: sylius.ui.currency
+          sortable: ~
+        price:
+          type: twig
+          label: sylius.ui.price
+          path: .
+          sortable: price
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/optionPrice.html.twig"
+      actions:
+        main:
+          stabilization_number_of_days_per_week:
+            type: stabilization_number_of_days_per_week
+            label: ksante_subscription.ui.stabilization_number_of_days_per_week
+            options:
+              link:
+                route: ksante_subscription_admin_stabilization_number_of_days_per_week_index
+          stabilization_categories:
+            type: stabilization_categories
+            label: ksante_subscription.ui.stabilization_categories
+            options:
+              link:
+                route: ksante_subscription_admin_stabilization_category_index
+          stabilization_number_of_weeks_interval:
+            type: stabilization_number_of_weeks_interval
+            label: ksante_subscription.ui.stabilization_number_of_weeks_interval
+            options:
+              link:
+                route: ksante_subscription_admin_stabilization_number_of_weeks_interval_index
+          generate_stabilization_options:
+            type: generate_stabilization_options
+            label: ksante_subscription.ui.generate_stabilization_options
+            options:
+              link:
+                route: ksante_subscription_stabilization_options_generate
+        item:
+          delete:
+            type: delete
+      filters:
+        stabilizationNumberOfWeeksInterval:
+          type: string
+          label: ksante_subscription.ui.stabilization_number_of_weeks_interval
+          options:
+            fields: [ stabilizationNumberOfWeeksInterval.fromWeek, stabilizationNumberOfWeeksInterval.toWeek ]
+        stabilizationNumberOfDaysPerWeek:
+          type: string
+          label: ksante_subscription.ui.stabilization_number_of_days_per_week
+          options:
+            fields: [ stabilizationNumberOfDaysPerWeek.numberOfDays ]
+        stabilizationCategory:
+          type: string
+          label: ksante_subscription.ui.stabilization_category
+          options:
+            fields: [ stabilizationCategory.name ]
+        channel:
+          type: entity
+          label: sylius.ui.channel
+          form_options:
+            class: "%sylius.model.channel.class%"
+        price:
+          type: money
+          label: sylius.ui.price
+          options:
+            currency_field: currencyCode
+
+    ksante_subscription_show_stabilization_options_by_subscription:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\StabilizationOptions
+          repository:
+            method: findStabilizationOptionsBySubscription
+            arguments:
+              $subscriptionID: $subscriptionID
+      limits: [ 50, 100 ]
+      fields:
+        channel:
+          type: twig
+          label: sylius.ui.channel
+          sortable: channel.code
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/channel.html.twig"
+        currencyCode:
+          type: string
+          label: sylius.ui.currency
+          sortable: ~
+        priceOption:
+          type: string
+          label: sylius.ui.price
+          sortable: price
+
+    ksante_subscription_admin_subscription_by_id:
+      driver:
+        name: doctrine/orm
+        options:
+          class: Ksante\SubscriptionPlugin\Entity\Subscription
+          repository:
+            method: getSubscriptionById
+            arguments:
+              id: $id
+      sorting:
+        firstOrderDate: desc
+      limits: [ 50, 100 ]
+      fields:
+        customer:
+          type: twig
+          label: sylius.ui.customer
+          sortable: customer.lastName
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/customer.html.twig"
+        channel:
+          type: twig
+          label: sylius.ui.channel
+          sortable: channel.code
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/channel.html.twig"
+        state:
+          type: twig
+          label: sylius.ui.status
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/state.html.twig"
+            vars:
+              labels: "@KsanteSubscriptionPlugin/Admin/Subscription/Label/State"
+        completedOrdersCount:
+          type: string
+          label: ksante_subscription.ui.completedOrdersCount
+        shippedOrdersCount:
+          type: string
+          label: ksante_subscription.ui.shippedOrdersCount
+        firstOrderDate:
+          type: datetime
+          label: ksante_subscription.ui.firstOrderDate
+          sortable: ~
+        lastOrderDate:
+          type: datetime
+          label: ksante_subscription.ui.lastOrderDate
+          sortable: ~
+        nextOrderDate:
+          type: twig
+          label: ksante_subscription.ui.nextOrderDate
+          path: .
+          options:
+            template: "@KsanteSubscriptionPlugin/grid/Field/nextOrderDate.html.twig"
+          sortable: ~
+      actions:
+        item:
+          manageSubscription:
+            type: links
+            label: ksante_subscription.ui.manage_subscriptions
+            options:
+              icon: cog
+              links:
+                showSubscription:
+                  icon: icon search
+                  label: sylius.ui.orders
+                  route: ksante_subscription_subscription_show_orders
+                  parameters:
+                    subscriptionID: resource.id
+                showSubscriptionorders:
+                  icon: icon search
+                  label: ksante_subscription.ui.subscription_orders
+                  route: ksante_subscription_subscription_order_show_subscription_orders
+                  parameters:
+                    subscriptionID: resource.id
+                show_stabilization_options:
+                  icon: icon search
+                  label: ksante_subscription.ui.stabilization_options
+                  route: ksante_subscription_show_stabilization_options_by_subscription
+                  visible: resource.isStabilizationProgram
+                  parameters:
+                    subscriptionID: resource.id
+                pauseSubscription:
+                  label: ksante_subscription.ui.pause_subscription
+                  icon: pause circle outline
+                  route: ksante_subscription_pause_subscription
+                  visible: resource.isSubscriptionOnGoing
+                  parameters:
+                    id: resource.id
+                autoPauseSubscription:
+                  label: ksante_subscription.ui.pause_auto_subscription
+                  icon: pause circle outline
+                  route: ksante_subscription_auto_pause_subscription
+                  visible: resource.isSubscriptionOnGoing
+                  parameters:
+                    id: resource.id
+                unsubscribe:
+                  label: ksante_subscription.ui.unsubscribe
+                  icon: stop
+                  route: ksante_subscription_unsubscribe
+                  visible: resource.showUnsubscribe
+                  parameters:
+                    id: resource.id
+                resendPaymentEmail:
+                  label: ksante_subscription.ui.resendPaymentEmail
+                  icon: redo
+                  route: ksante_subscription_resend_payment_email
+                  parameters:
+                    id: resource.id
+                accessPayboxPage:
+                  label: ksante_subscription.ui.accessPayboxPage
+                  icon: arrow right
+                  route: ksante_subscription_access_paybox_page
+                  parameters:
+                    id: resource.id
+                resumeSubscription:
+                  label: ksante_subscription.ui.resumeSubscription
+                  icon: linkify
+                  route: ksante_subscription_resume_subscription
+                  visible: resource.isSubscriptionOnPause
+                  parameters:
+                    id: resource.id
+                showLogs:
+                  type: show
+                  label: ksante_subscription.ui.subscription_logs
+                  icon: clipboard outline
+                  route: ksante_subscription_subscription_show_states_logs_by_subscription
+                  parameters:
+                    subscriptionID: resource.id
+      filters:
+        customer:
+          type: string
+          label: sylius.ui.customer
+          options:
+            fields: [ customer.email, customer.firstName, customer.lastName ]
+        firstOrderDate:
+          type: date
+          label: ksante_subscription.ui.firstOrderDate
+          options:
+            field: firstOrderDate
+            inclusive_to: true
+        lastOrderDate:
+          type: date
+          label: ksante_subscription.ui.lastOrderDate
+          options:
+            field: lastOrderDate
+            inclusive_to: true
+        nextOrderDate:
+          type: date
+          label: ksante_subscription.ui.lastOrderDate
+          options:
+            field: lastOrderDate
+            inclusive_to: true
+        program:
+          type: string
+          label: ksante_subscription.ui.program
+          options:
+            fields: [ program.code ]
+        channel:
+          type: entity
+          label: sylius.ui.channel
+          form_options:
+            class: "%sylius.model.channel.class%"

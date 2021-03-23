@@ -1,0 +1,97 @@
+ksante_subscription:
+  ui:
+    programs: Programmes
+    program: Programme
+    periodicity: Périodicité
+    minimumProgram: La durée minimale de l'abonnement
+    maximumProgram: La durée maximale de l'abonnement
+    products: Produits
+    manage_program: Gérer votre catalogue de programmes
+    7: 7 Jours
+    28: 28 Jours
+    add_product: Ajouter un produit
+    quantity: Quantité
+    step: Pas
+    product: Produit
+    duplicate: Dupliquer
+    ingredients: Ingrédients
+    preparationTips: Conseils de préparation
+    recipe: Recette
+    nutritionalInfo: Informations nutritionnelles
+    producerInfo: A propos du producteur
+    conservationTip: Conseils de conservation
+    usageTips: Conseils d’utilisation
+    conditioning: Conditionnement
+    program_details: Détails du programme
+    subscriptions: Abonnements
+    subscription: Abonnement
+    firstOrderDate: Date première commande
+    lastOrderDate: Date dernière commande
+    order_by_subscriptions: Commandes Abonnements
+    manage_subscriptions: Gestion Abonnements
+    pause_subscription: Pause
+    pause_auto_subscription: Auto Pause
+    unsubscribe: Se désabonner
+    on_going: En cours
+    stopped: Arrêté
+    auto_paused: Pause auto
+    paused: Pause
+    finalized: Finalisé
+    resendPaymentEmail: Renvoyer mail paiement
+    accessPayboxPage: Accès page Paybox
+    resumeSubscription: Reprendre abonnement
+    show_order_item_details: Afficher produits
+    show_subscription_order_item_details: Afficher produits
+    product_selected_products: Les programmes sélectionnés
+    selected_products:  Les produits sélectionnés
+    completedOrdersCount: Commandes terminées
+    shippedOrdersCount: Commandes expédiées
+    expectedNumberOfOrders: Nombre de commandes prévues
+    show_subscriptions: Afficher les abonnements
+    show_subscription: Afficher l'abonnement
+    subscription_orders: Commandes abonnement
+    expectedDeliveryDate: Date de livraison prévue
+    validated: Validé
+    awaiting_payment: En attente de règlement
+    paid: Payée
+    cancelled: Annulé
+    subscription_logs: Logs abonnement
+    new_status: Nouveau statut
+    agent: Agent
+    is_stabilization_program: Stabilisation?
+    stabilization: Stabilisation
+    stabilization_options: Options stabilisation
+    stabilization_number_of_days_per_week: Nombre de jours par semaine
+    stabilization_number_of_days_per_weeks: Nombre de jours par semaine
+    stabilization_number_of_weeks_interval: Les intervalles de semaines
+    manage_stabilization_number_of_weeks_interval: Gérer les intervalles de semaines
+    stabilization_category: Categorie stabilisation
+    stabilization_categories: Categories
+    save_stabilization_options_prices: Sauvegarder les prix
+    generate_stabilization_options: Générer des options
+    user: Utilisateur
+    isUpdatedByCustomer: Mis à jour par le client?
+    created: Crée
+    moreDetails: Plus de détails
+    stimulateOrderGeneration: Stimuler génération prochaine commande
+    isObligatory: Obligatoire?
+    addTaxon: Ajouter un taxon
+    minimumNumberOfProducts: Minimum
+    maximumNumberOfProducts: Maximum
+    nextOrderDate: Prochaine commande
+    isValidated: Converti en commande ?
+    manageSelectedProducts: Gérer les produits sélectionnés
+    manageSelectedOptions: Gérer les options sélectionnées
+    stabilization_from_number_of_weeks: De
+    stabilization_to_number_of_weeks: À
+    days: Jours
+    selected_options: Options sélectionnées
+    show_subscription_order_options: Afficher options
+    add_option: Ajouter option
+    nutritionIndex: Indice nutritionnel
+    pause_subscription_subject: Votre programme a bien été mis en pause ⏸️
+    unsubscribe_subject: Votre programme a bien été interrompu
+    exportToCSV: Exporter en CSV
+    regularization: Régularisation
+    isRegularization: Régularisation?
+    previous_status: Statut précédent

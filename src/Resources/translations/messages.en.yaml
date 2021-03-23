@@ -1,0 +1,96 @@
+ksante_subscription:
+  ui:
+    programs: Programs
+    program: Program
+    periodicity: Periodicity
+    minimumProgram: The minimum duration of the program
+    maximumProgram: The maximum duration of the program
+    products: Products
+    manage_program: Manage your program catalog
+    7: 7 Days
+    28: 28 Days
+    add_product: Add a product
+    quantity: Quantity
+    step: Step
+    product: Product
+    duplicate: Duplicate
+    ingredients: Ingredients
+    preparationTips: Preparation tips
+    recipe: Recipe
+    nutritionalInfo: Nutritional information
+    producerInfo: Producer information
+    conservationTip: Conservation tips
+    usageTips: Usage tips
+    conditioning: Conditioning
+    program_details: Program details
+    subscriptions: Subscriptions
+    subscription: Subscription
+    firstOrderDate: First Order Date
+    lastOrderDate: Last Order Date
+    manage_subscriptions: Manage Subscriptions
+    pause_subscription: Pause
+    pause_auto_subscription: Auto Pause
+    unsubscribe: Unsubscribe
+    on_going: On going
+    stopped: Stopped
+    auto_paused: Auto paused
+    paused: Paused
+    finalized: Finalized
+    resendPaymentEmail: Resend Payment Email
+    accessPayboxPage: Access Paybox Page
+    resumeSubscription: Resume ubscription
+    show_order_item_details: Show products
+    show_subscription_order_item_details: Show products
+    product_selected_products: Selected programs
+    selected_products: Selected products
+    completedOrdersCount: Completed orders
+    shippedOrdersCount: Shipped orders
+    expectedNumberOfOrders: Expected orders number
+    show_subscriptions: Show subscriptions
+    show_subscription: Show subscription
+    subscription_orders: Subscription orders
+    expectedDeliveryDate: Expected delivery date
+    validated: Validated
+    awaiting_payment: Awaiting payment
+    paid: Paid
+    cancelled: Cancelled
+    subscription_logs: Subscription logs
+    new_status: New status
+    agent: Agent
+    is_stabilization_program: Stabilization?
+    stabilization: Stabilization
+    stabilization_options: Stabilization options
+    stabilization_number_of_days_per_week: Number of days per week
+    stabilization_number_of_days_per_weeks: Number of days per week
+    stabilization_number_of_weeks_interval: Weeks intervals
+    manage_stabilization_number_of_weeks_interval: Manage stabilization week intervals
+    stabilization_category: Stabilization category
+    stabilization_categories: Categories
+    save_stabilization_options_prices: Save prices
+    generate_stabilization_options: Generate options
+    user: User
+    isUpdatedByCustomer: Updated by customer?
+    created: Created
+    moreDetails: More details
+    stimulateOrderGeneration: Stimulate next order generation
+    isObligatory: Obligatory?
+    addTaxon: Add a taxon
+    minimumNumberOfProducts: Minimum
+    maximumNumberOfProducts: Maximum
+    nextOrderDate: Next order
+    isValidated: Converted to order?
+    manageSelectedProducts: Manage selected products
+    manageSelectedOptions: Manage selected options
+    stabilization_from_number_of_weeks: From
+    stabilization_to_number_of_weeks: To
+    days: Days
+    selected_options: Selected options
+    show_subscription_order_options: Show options
+    add_option: Add option
+    nutritionIndex: Nutrition index
+    pause_subscription_subject: Your program has been paused ⏸️
+    unsubscribe_subject: Your program has been interrupted
+    exportToCSV: CSV export
+    regularization: Regularization
+    isRegularization: Regularization?
+    previous_status: Previous status

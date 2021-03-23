@@ -1,0 +1,14 @@
+<div style="width: 100%; text-align: center;">
+    <div class="ui input position" style="">
+        {% if data.nextOrderDate is defined and data.nextOrderDate is not null %}
+            <form action="/admin/subscription/updateNextOrderDate" method="post">
+                <div style="width: 100%; display: flex;">
+                    <input type='hidden' value="{{ data.id }}" name="id" />
+                    <input type="date" name="nextOrderDate" style="margin-right: 2px; width: 50% !important;" value="{{ data.nextOrderDate|date('Y-m-d') }}">
+                    <button type="submit" style="width: 40% !important;" class="ui labeled icon teal button"><a style="color: white; margin-left: -16px">{{ 'sylius.ui.save'|trans }}</a></button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
